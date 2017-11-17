@@ -23,8 +23,9 @@ The countdown timer can be customised to fit your style. The follow can be modif
 - xOffset
 - yOffset
 - labelOffsets
+- labels
 
-An example of this would be `http://[server-address]/countdown.php?time=2016-12-25+00:00:01&width=640&height=110&boxColor=8B2860&font=BebasNeue&fontColor=FBB92C&fontSize=60&xOffset=155&yOffset=70&labelOffsets=1.4,5,8,11`.
+An example of this would be `http://[server-address]/countdown.php?time=2016-12-25+00:00:01&width=640&height=110&boxColor=8B2860&font=BebasNeue&fontColor=FBB92C&fontSize=60&xOffset=155&yOffset=70&labelOffsets=1.4,5,8,11&labels=Days,Hrs,Mins,Secs`.
 
 ###Fonts
 
