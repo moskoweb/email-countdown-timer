@@ -142,6 +142,7 @@ class CountdownTimer
     $this->fontColor = $this->hex2rgb($settings['fontColor']);
 
     $this->labelOffsets = explode(',', $settings['labelOffsets']);
+    $this->labels = explode(',', $settings['labels']);
 
     $this->date['time'] = $settings['time'];
     $this->date['futureDate'] = new DateTime(date('r', strtotime($settings['time'])));
@@ -197,14 +198,14 @@ class CountdownTimer
     $this->characterWidth = $this->characterDimensions[2];
     $this->characterHeight = abs($this->characterDimensions[1] + $this->characterDimensions[7]);
 
-    $this->base = $this->applyTextToImage($this->base, $this->fontSettings, $this->date);
+    $this->base = $this->applyTextToImage($this->base, $this->fontSettings, $this->date, $this->labels);
 
     // create each frame
     for ($i = 0; $i <= $this->seconds; $i++) {
       $layer = imagecreatetruecolor($this->width, $this->height);
       $this->createFilledBox($layer);
 
-      $layer = $this->applyTextToImage($layer, $this->fontSettings, $this->date);
+      $layer = $this->applyTextToImage($layer, $this->fontSettings, $this->date, $this->labels);
     }
 
     $this->showImage();
@@ -219,7 +220,7 @@ class CountdownTimer
    * @param $date
    * @return mixed
    */
-  private function applyTextToImage($image, $font, $date)
+  private function applyTextToImage($image, $font, $date, $labels)
   {
     $interval = date_diff(
       $date['futureDate'],
@@ -230,11 +231,13 @@ class CountdownTimer
       $text = $interval->format('00:00:00:00');
       $this->loops = 1;
     } else {
-      $text = $interval->format('0%a:%H:%I:%S');
+      if ($interval->d < 10 && $interval->m == 0) {
+        $text = $interval->format('0%a:%H:%I:%S');
+      } else {
+        $text = $interval->format('%a:%H:%I:%S');
+      }
       $this->loops = 0;
     }
-
-    $labels = array('Days', 'Hrs', 'Mins', 'Secs');
 
     // apply the labels to the image $this->yOffset + ($this->characterHeight * 0.8)
     foreach ($labels as $key => $label) {
@@ -280,7 +283,8 @@ new CountdownTimer(array(
   'fontSize' => isset($_GET['fontSize']) ? $_GET['fontSize'] : 60,
   'xOffset' => isset($_GET['xOffset']) ? $_GET['xOffset'] : 155,
   'yOffset' => isset($_GET['yOffset']) ? $_GET['yOffset'] : 70,
-  'labelOffsets' => isset($_GET['labelOffsets']) ? $_GET['labelOffsets'] : "1.4,5,8,11",
+  'labelOffsets' => isset($_GET['labelOffsets']) ? $_GET['labelOffsets'] : "0.6,3.45,5.9,8.7",
+  'labels' => isset($_GET['labels']) ? $_GET['labels'] : "Days,Hrs,Mins,Secs",
 ));
 
-// http://[server-address]/countdown.php?time=2016-12-25+00:00:01&width=640&height=110&boxColor=8B2860&font=BebasNeue&fontColor=FBB92C&fontSize=60&xOffset=155&yOffset=70&labelOffsets=1.4,5,8,11
+// http://[server-address]/countdown.php?time=2016-12-25+00:00:01&width=640&height=110&boxColor=8B2860&font=BebasNeue&fontColor=FBB92C&fontSize=60&xOffset=155&yOffset=70&labelOffsets=0.6,3.45,5.9,8.7&labels=Days,Hrs,Mins,Secs
